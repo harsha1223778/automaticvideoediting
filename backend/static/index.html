@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraCut - AI Automated Video Editor</title>
+    <meta name="description" content="An advanced automatic video editor that compiles beat-synced video transitions from your photos and music using intelligent agent processing.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=16">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <span class="logo-icon"><i data-lucide="video"></i></span>
+                <h1>Aura<span>Cut</span></h1>
+                <span class="agent-tag"><span class="pulse-dot"></span>AI Agent Active</span>
+            </div>
+            <div class="header-actions">
+                <button id="btn-help" class="icon-btn-secondary" title="How to use"><i data-lucide="help-circle"></i></button>
+                <div class="status-indicator" id="api-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting to Server...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="app-workspace">
+            <!-- Left Workspace: Media and Control Panel -->
+            <section class="control-panel">
+                <div class="control-panel-scroll">
+                    <div class="panel-card">
+
+                    <h2 class="panel-title"><i data-lucide="folder-open"></i> 1. Import Media</h2>
+                    
+                    <!-- Images Upload Dropzone -->
+                    <div class="upload-group">
+                        <label class="upload-label">Images (10-15 Photos)</label>
+                        <div class="dropzone" id="images-dropzone">
+                            <input type="file" id="images-input" multiple accept="image/*" class="file-input">
+                            <i data-lucide="image" class="dropzone-icon"></i>
+                            <p class="dropzone-text">Drag & drop photos or <span>Browse</span></p>
+                            <p class="dropzone-sub">PNG, JPG, WebP supported</p>
+                        </div>
+                        <div class="media-preview-container" id="images-preview-grid">
+                            <!-- Dynamically filled with photo thumbnails -->
+                        </div>
+                    </div>
+
+                    <!-- Audio Upload Dropzone -->
+                    <div class="upload-group">
+                        <label class="upload-label">Background Audio (1 Track)</label>
+                        <div class="dropzone" id="audio-dropzone">
+                            <input type="file" id="audio-input" accept="audio/*" class="file-input">
+                            <i data-lucide="music" class="dropzone-icon"></i>
+                            <p class="dropzone-text" id="audio-drop-text">Drag & drop music or <span>Browse</span></p>
+                            <p class="dropzone-sub">MP3, WAV, AAC supported</p>
+                        </div>
+                        <div class="audio-track-info hidden" id="audio-info-card">
+                            <i data-lucide="music-4" class="audio-icon"></i>
+                            <div class="audio-details">
+                                <span class="audio-name" id="audio-name">song.mp3</span>
+                                <span class="audio-size" id="audio-size">3.4 MB</span>
+                            </div>
+                            <button class="remove-audio-btn" id="btn-remove-audio"><i data-lucide="x"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-card mt-4">
+                    <h2 class="panel-title"><i data-lucide="sliders"></i> 2. Director Options</h2>
+                    
+                    <!-- Aspect Ratio Selector -->
+                    <div class="settings-group">
+                        <label class="settings-label">Output Aspect Ratio</label>
+                        <div class="ratio-options">
+                            <label class="ratio-card active">
+                                <input type="radio" name="aspect-ratio" value="16:9" checked class="hidden-radio">
+                                <div class="ratio-preview landscape"></div>
+                                <span class="ratio-name">Landscape (16:9)</span>
+                                <span class="ratio-desc">YouTube, Desktop</span>
+                            </label>
+                            <label class="ratio-card">
+                                <input type="radio" name="aspect-ratio" value="9:16" class="hidden-radio">
+                                <div class="ratio-preview portrait"></div>
+                                <span class="ratio-name">Portrait (9:16)</span>
+                                <span class="ratio-desc">Shorts, TikTok, Reels</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Theme Style Selector -->
+                    <div class="settings-group mt-4">
+                        <label class="settings-label">Visual Style & Music Theme</label>
+                        <div class="theme-grid">
+                            <label class="theme-card active" data-theme="cinematic">
+                                <input type="radio" name="video-theme" value="cinematic" checked class="hidden-radio">
+                                <div class="theme-glow"></div>
+                                <i data-lucide="film" class="theme-icon"></i>
+                                <span class="theme-title">Cinematic</span>
+                                <span class="theme-desc">Smooth crossfades, deep cool grading, elegant zoom.</span>
+                            </label>
+                            
+                            <label class="theme-card" data-theme="energetic">
+                                <input type="radio" name="video-theme" value="energetic" class="hidden-radio">
+                                <div class="theme-glow"></div>
+                                <i data-lucide="zap" class="theme-icon"></i>
+                                <span class="theme-title">Energetic</span>
+                                <span class="theme-desc">Fast cuts, dynamic slide blurs, high-contrast colors.</span>
+                            </label>
+
+                            <label class="theme-card" data-theme="vintage">
+                                <input type="radio" name="video-theme" value="vintage" class="hidden-radio">
+                                <div class="theme-glow"></div>
+                                <i data-lucide="camera" class="theme-icon"></i>
+                                <span class="theme-title">Vintage</span>
+                                <span class="theme-desc">Warm yellow nostalgic tones, soft fade cuts, light grain.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+                </div>
+                
+                <div class="control-panel-footer">
+                    <!-- Generate Trigger -->
+                    <button class="primary-btn" id="btn-generate" disabled>
+                        <span class="btn-content">
+                            <i data-lucide="sparkles"></i> Auto-Generate Video
+                        </span>
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- Right Column: Player & Timeline Stack -->
+            <div class="workspace-right-column">
+                <!-- Right Workspace: Preview Player -->
+                <section class="preview-panel">
+
+                <div class="panel-card preview-card">
+                    <h2 class="panel-title"><i data-lucide="tv"></i> Live Preview</h2>
+                    
+                    <div class="player-container">
+                        <!-- Default Placeholder -->
+                        <div class="player-placeholder" id="player-placeholder">
+                            <div class="placeholder-content">
+                                <div class="pulse-icon-container">
+                                    <i data-lucide="clapperboard"></i>
+                                </div>
+                                <h3>Ready to Render</h3>
+                                <p>Import your photos and background audio, then click "Auto-Generate Video" to see the agent compile your cut.</p>
+                            </div>
+                        </div>
+
+                        <!-- Active Processing Overlay -->
+                        <div class="player-loader hidden" id="player-loader">
+                            <div class="loader-content">
+                                <div class="spinner"></div>
+                                <h3 id="loader-title">Agent Editing Video...</h3>
+                                <p id="loader-desc">Uploading project files to backend.</p>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="loader-progress"></div>
+                                </div>
+                                <span class="progress-percentage" id="loader-percent">10%</span>
+                            </div>
+                        </div>
+
+                        <!-- Active Video Player -->
+                        <video id="video-player" class="video-element hidden" controls>
+                            <source src="" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <!-- Export Actions -->
+                    <div class="export-actions hidden" id="export-actions">
+                        <span class="export-info"><i data-lucide="check-circle-2"></i> Render completed!</span>
+                        <a href="" id="btn-download" download class="secondary-btn">
+                            <i data-lucide="download"></i> Download Video (MP4)
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+
+        <!-- Bottom Timeline Panel -->
+        <footer class="app-timeline">
+            <div class="timeline-header">
+                <div class="timeline-meta">
+                    <span class="timeline-label"><i data-lucide="rows"></i> Timeline Editor</span>
+                    <span class="timeline-duration" id="timeline-duration">00:00</span>
+                </div>
+                <div class="timeline-controls">
+                    <button class="control-btn" id="timeline-btn-play" disabled><i data-lucide="play"></i></button>
+                    <span class="time-readout" id="timeline-time">00:00 / 00:00</span>
+                </div>
+            </div>
+
+            <div class="timeline-workspace">
+                <!-- Time Scale Ruler -->
+                <div class="timeline-ruler" id="timeline-ruler">
+                    <!-- Dynamic ticks will be rendered here -->
+                </div>
+
+                <div class="timeline-tracks">
+                    <!-- Track 1: Images / Video clips -->
+                    <div class="track-row" id="video-track">
+                        <div class="track-info">
+                            <i data-lucide="image"></i>
+                            <span>Video</span>
+                        </div>
+                        <div class="track-timeline-content" id="video-track-clips">
+                            <div class="timeline-empty-message">No clips uploaded. Drop photos above.</div>
+                        </div>
+                    </div>
+
+                    <!-- Track 2: Transitions -->
+                    <div class="track-row" id="transition-track">
+                        <div class="track-info">
+                            <i data-lucide="arrow-right-left"></i>
+                            <span>Transition</span>
+                        </div>
+                        <div class="track-timeline-content" id="transition-track-markers">
+                            <!-- Dynamic transition markers will go here -->
+                        </div>
+                    </div>
+
+                    <!-- Track 3: Audio -->
+                    <div class="track-row" id="audio-track">
+                        <div class="track-info">
+                            <i data-lucide="music"></i>
+                            <span>Audio</span>
+                        </div>
+                        <div class="track-timeline-content" id="audio-track-clip">
+                            <div class="timeline-empty-message">No audio track imported.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+        <!-- Floating Inspector Drawer -->
+        <aside class="inspector-drawer hidden" id="inspector-drawer">
+            <div class="drawer-header">
+                <h3><i data-lucide="sliders"></i> Clip Inspector</h3>
+                <button class="icon-btn-secondary" id="btn-close-drawer"><i data-lucide="x"></i></button>
+            </div>
+            <div class="drawer-content" id="drawer-content">
+                <!-- Dynamic Content (Image/Audio options) filled by JS -->
+            </div>
+        </aside>
+            </div> <!-- End of workspace-right-column -->
+
+        </main> <!-- End of app-workspace -->
+    </div>
+
+
+    <!-- Help / Guide Modal -->
+    <div class="modal-overlay hidden" id="help-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i data-lucide="help-circle"></i> Creative Options Guide</h3>
+                <button class="icon-btn-secondary" id="btn-close-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                
+                <!-- Section 1: Filters -->
+                <div class="guide-section">
+                    <h4><i data-lucide="palette" style="color:var(--accent-blue);"></i> Visual Color Filters</h4>
+                    <p class="section-intro">Apply specialized color grading formulas to give each photo a unique vibe:</p>
+                    <div class="guide-grid">
+                        <div class="guide-item">
+                            <span class="guide-name">Cinematic Cool</span>
+                            <span class="guide-desc">Deep teal shadow tones with warm highlights. Creates a modern high-contrast cinematic film grade.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Energetic Vivid</span>
+                            <span class="guide-desc">High saturation and boosted contrast. Perfect for action shots, travel, or bright outdoor scenes.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Vintage Warm</span>
+                            <span class="guide-desc">Warm yellow highlights, desaturated greens, and lowered contrast for a nostalgic film print look.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Noir High-Contrast</span>
+                            <span class="guide-desc">Dramatic black-and-white grading with deep shadows and bright highlight definitions. Excellent for portraits.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Cyberpunk Neon</span>
+                            <span class="guide-desc">Intense cyan shadow tinting and magenta highlights. Captures a futuristic neon city aesthetic.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Dreamy Bloom</span>
+                            <span class="guide-desc">Adds a soft-focus lens glow that bleeds highlights together, creating a dreamy, ethereal fantasy look.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Golden Sunset</span>
+                            <span class="guide-desc">Applies warm orange/golden hour sepia tones that give photos a warm, radiant feel.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Cool Pine</span>
+                            <span class="guide-desc">Applies deep forest green tones, desaturates warm hues, and boosts contrast for a moody outdoor look.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Retro Polaroid</span>
+                            <span class="guide-desc">Fades black levels upwards, desaturates highlights, and wraps the image in a realistic white Polaroid instant border.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Cinematic Letterbox</span>
+                            <span class="guide-desc">Applies cinematic teal-orange color grading and renders black horizontal letterbox bars on the top and bottom.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Cyberpunk Border</span>
+                            <span class="guide-desc">Intense cyberpunk neon colors bounded by a sharp glowing cyan cybernetic border frame.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Vintage Grain</span>
+                            <span class="guide-desc">Warm yellow highlights combined with a dynamic, randomized digital noise texture that simulates organic film grain.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Vaporwave Dream</span>
+                            <span class="guide-desc">Saturates deep magenta and neon violet tones while adding bright cyan highlight tinting.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Motion / VFX -->
+                <div class="guide-section mt-6">
+                    <h4><i data-lucide="sparkles" style="color:var(--accent-purple);"></i> Camera Motion & VFX</h4>
+                    <p class="section-intro">Control how the camera moves across the image over its display duration:</p>
+                    <div class="guide-grid">
+                        <div class="guide-item">
+                            <span class="guide-name">Slow Zoom In</span>
+                            <span class="guide-desc">Starts at full frame and slowly scales inwards. Keeps the subject focused and pulls the viewer in.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Slow Zoom Out</span>
+                            <span class="guide-desc">Starts cropped in and slowly scales outwards. Reveals the surrounding environment of the subject.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Pan Left-to-Right</span>
+                            <span class="guide-desc">Crops the image and slides the viewport horizontally from left to right. Great for landscape photos.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Pan Right-to-Left</span>
+                            <span class="guide-desc">Slides the viewport horizontally from right to left, creating a cinematic camera pan.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Tilt Upwards</span>
+                            <span class="guide-desc">Slides the viewport vertically upwards, mimicking a real camera panning up to scan tall subjects.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Tilt Downwards</span>
+                            <span class="guide-desc">Slides the viewport vertically downwards to reveal the bottom part of portrait photos.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Slow Spin</span>
+                            <span class="guide-desc">Applies a slow, subtle rotational camera spin over the duration, keeping the composition dynamic.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Diagonal Pan</span>
+                            <span class="guide-desc">Pans diagonally from bottom-left to top-right corner while slowly scaling inwards.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Beat Shake</span>
+                            <span class="guide-desc">Vibrates and shakes the camera viewport dynamically exactly on beat drops to create high-impact hits.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Audio Pulse</span>
+                            <span class="guide-desc">Continuously scales/zooms the camera in and out in real-time sync with the music amplitude/volume envelope.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Glitch Pulse</span>
+                            <span class="guide-desc">Triggers rapid digital coordinate offsets and jitters during major beat peaks for an active template edit vibe.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Static (No Motion)</span>
+                            <span class="guide-desc">Centered still display without any camera motion. Keeps the composition clean and unchanged.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Transitions -->
+                <div class="guide-section mt-6">
+                    <h4><i data-lucide="arrow-right-left" style="color:var(--success);"></i> Slide & Blend Transitions</h4>
+                    <p class="section-intro">Define how the video transitions from the current clip to the next one:</p>
+                    <div class="guide-grid">
+                        <div class="guide-item">
+                            <span class="guide-name">Crossfade (Blend)</span>
+                            <span class="guide-desc">The preceding image fades out while the next image fades in underneath, creating a soft cinematic blend.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Slide Left</span>
+                            <span class="guide-desc">The next image slides in from the right edge, covering the previous image in a swift horizontal wipe.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Slide Right</span>
+                            <span class="guide-desc">The next image slides in from the left edge towards the right.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Slide Up</span>
+                            <span class="guide-desc">The next image slides up from the bottom of the screen, creating a clean vertical transition.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Slide Down</span>
+                            <span class="guide-desc">The next image slides down from the top of the screen.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Slide Diagonal</span>
+                            <span class="guide-desc">The next image slides in diagonally from the bottom-right corner.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Fade to Black</span>
+                            <span class="guide-desc">Fades the current clip completely out to black, before fading the next clip back in from black.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Zoom Blend</span>
+                            <span class="guide-desc">A rapid camera zoom blend transition that pulls the viewport inwards to dissolve into the next clip.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Spin Blend</span>
+                            <span class="guide-desc">Twists the outgoing frame clockwise while rotating the incoming frame counter-clockwise for a dynamic rotational wipe.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">White Flash</span>
+                            <span class="guide-desc">Flashes a bright white canvas overlay during the transition cut, creating an energetic highlight pop.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Glitch Cut</span>
+                            <span class="guide-desc">Applies a sudden horizontal chromatic aberration jitter to the next clip's entrance frames for a cybernetic edit.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="guide-name">Cut (None)</span>
+                            <span class="guide-desc">An instantaneous frame swap. Best for fast-tempo energetic music beats.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Entrypoint -->
+    <script src="app.js?v=16"></script>
+
+
+
+
+</body>
+</html>

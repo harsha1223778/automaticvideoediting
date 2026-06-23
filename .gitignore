@@ -1,0 +1,23 @@
+# Virtual environment
+backend/venv/
+backend/.venv/
+venv/
+.venv/
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+backend/__pycache__/
+
+# Local rendering directories (crucial to exclude to avoid bloating repo)
+backend/temp_uploads/
+backend/static_outputs/
+backend/temp_processed/
+backend/test_temp/
+*.mp4
+*.wav
+
+# OS files
+.DS_Store
+Thumbs.db
