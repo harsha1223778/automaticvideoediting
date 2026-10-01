@@ -1706,3 +1706,85 @@ button[type="submit"] {
     z-index: 9999;
 }
 
+
+
+/* ==========================================================================
+   Original vs Edited Video Comparison
+   ========================================================================== */
+
+.video-comparison {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+    margin-top: 18px;
+}
+
+.comparison-video-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.comparison-video-header {
+    padding: 16px 18px 12px;
+}
+
+.comparison-video-header h3 {
+    margin: 8px 0 4px;
+    font-size: 17px;
+}
+
+.comparison-video-header p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.comparison-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.original-badge {
+    background: rgba(255, 255, 255, 0.10);
+}
+
+.edited-badge {
+    background: rgba(120, 90, 255, 0.22);
+}
+
+.comparison-video {
+    display: block;
+    width: 100%;
+    max-height: 420px;
+    min-height: 220px;
+    background: #000;
+    object-fit: contain;
+}
+
+.comparison-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+    .video-comparison {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-video {
+        max-height: 360px;
+    }
+}
