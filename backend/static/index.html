@@ -543,22 +543,64 @@
                         </div>
 
 
-                        <!-- VIDEO PLAYER -->
-                        <video
-                            id="video-player"
-                            class="video-element hidden"
-                            controls
-                            playsinline
+                        <!-- ORIGINAL VS EDITED VIDEO COMPARISON -->
+                        <div class="video-comparison hidden" id="video-comparison">
+
+                            <div class="comparison-video-card">
+                                <div class="comparison-video-header">
+                                    <span class="comparison-badge original-badge">ORIGINAL</span>
+                                    <h3>Original Video</h3>
+                                    <p>Your uploaded video before editing</p>
+                                </div>
+
+                                <video
+                                    id="original-video-player"
+                                    class="comparison-video"
+                                    controls
+                                    playsinline
+                                >
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+
+                            <div class="comparison-video-card">
+                                <div class="comparison-video-header">
+                                    <span class="comparison-badge edited-badge">EDITED</span>
+                                    <h3>Edited Video</h3>
+                                    <p>Your AI-generated video</p>
+                                </div>
+
+                                <video
+                                    id="video-player"
+                                    class="comparison-video"
+                                    controls
+                                    playsinline
+                                >
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="comparison-controls hidden"
+                            id="comparison-controls"
                         >
+                            <button type="button" class="secondary-btn" id="btn-play-both">
+                                <i data-lucide="play"></i>
+                                Play Both
+                            </button>
 
-                            <source
-                                src=""
-                                type="video/mp4"
-                            >
+                            <button type="button" class="secondary-btn" id="btn-pause-both">
+                                <i data-lucide="pause"></i>
+                                Pause Both
+                            </button>
 
-                            Your browser does not support the video tag.
-
-                        </video>
+                            <button type="button" class="secondary-btn" id="btn-reset-both">
+                                <i data-lucide="rotate-ccw"></i>
+                                Reset Both
+                            </button>
+                        </div>
 
                     </div>
 
