@@ -65,6 +65,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const videoPlayer =
         document.getElementById("video-player");
 
+    const originalVideoPlayer =
+        document.getElementById("original-video-player");
+
+    const videoComparison =
+        document.getElementById("video-comparison");
+
+    const comparisonControls =
+        document.getElementById("comparison-controls");
+
+    const btnPlayBoth =
+        document.getElementById("btn-play-both");
+
+    const btnPauseBoth =
+        document.getElementById("btn-pause-both");
+
+    const btnResetBoth =
+        document.getElementById("btn-reset-both");
+
+    let originalVideoUrl = null;
+
     const exportActions =
         document.getElementById("export-actions");
 
@@ -3320,6 +3340,14 @@ document.addEventListener("DOMContentLoaded", () => {
             "hidden"
         );
 
+        if (videoComparison) {
+            videoComparison.classList.add("hidden");
+        }
+
+        if (comparisonControls) {
+            comparisonControls.classList.add("hidden");
+        }
+
         exportActions.classList.add(
             "hidden"
         );
@@ -3833,6 +3861,10 @@ document.addEventListener("DOMContentLoaded", () => {
             "hidden"
         );
 
+        playerPlaceholder.classList.add(
+            "hidden"
+        );
+
         videoPlayer.classList.remove(
             "hidden"
         );
@@ -3845,13 +3877,12 @@ document.addEventListener("DOMContentLoaded", () => {
         videoPlayer.src =
             videoUrl;
 
-
         videoPlayer.load();
 
+        showOriginalVideo();
 
         videoPlayer.play().catch(
             e => {
-
                 console.log(
                     "Auto-play blocked by browser.",
                     e
@@ -3862,6 +3893,122 @@ document.addEventListener("DOMContentLoaded", () => {
 
         btnDownload.href =
             videoUrl;
+    }
+
+
+    // ========================================================================
+    // ORIGINAL VIDEO COMPARISON
+    // ========================================================================
+
+    function showOriginalVideo() {
+
+        if (!originalVideoPlayer || !videoComparison) {
+            return;
+        }
+
+        const originalVideo =
+            selectedImages.find(
+                media => media.type === "video"
+            );
+
+        if (!originalVideo) {
+            videoComparison.classList.add("hidden");
+
+            if (comparisonControls) {
+                comparisonControls.classList.add("hidden");
+            }
+
+            return;
+        }
+
+        if (originalVideoUrl) {
+            URL.revokeObjectURL(originalVideoUrl);
+        }
+
+        originalVideoUrl =
+            URL.createObjectURL(
+                originalVideo.file
+            );
+
+        originalVideoPlayer.src =
+            originalVideoUrl;
+
+        originalVideoPlayer.load();
+        originalVideoPlayer.currentTime = 0;
+        videoPlayer.currentTime = 0;
+
+        videoComparison.classList.remove("hidden");
+
+        if (comparisonControls) {
+            comparisonControls.classList.remove("hidden");
+        }
+    }
+
+
+    if (btnPlayBoth) {
+        btnPlayBoth.addEventListener("click", () => {
+            const playPromises = [
+                originalVideoPlayer && originalVideoPlayer.play(),
+                videoPlayer && videoPlayer.play()
+            ].filter(Boolean);
+
+            Promise.allSettled(playPromises);
+        });
+    }
+
+
+    if (btnPauseBoth) {
+        btnPauseBoth.addEventListener("click", () => {
+            if (originalVideoPlayer) {
+                originalVideoPlayer.pause();
+            }
+
+            videoPlayer.pause();
+        });
+    }
+
+
+    if (btnResetBoth) {
+        btnResetBoth.addEventListener("click", () => {
+            if (originalVideoPlayer) {
+                originalVideoPlayer.pause();
+                originalVideoPlayer.currentTime = 0;
+            }
+
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+        });
+    }
+
+
+    if (originalVideoPlayer) {
+        originalVideoPlayer.addEventListener("seeked", () => {
+            if (
+                Math.abs(
+                    videoPlayer.currentTime -
+                    originalVideoPlayer.currentTime
+                ) > 0.15
+            ) {
+                videoPlayer.currentTime =
+                    originalVideoPlayer.currentTime;
+            }
+        });
+    }
+
+
+    if (videoPlayer) {
+        videoPlayer.addEventListener("seeked", () => {
+            if (
+                originalVideoPlayer &&
+                Math.abs(
+                    originalVideoPlayer.currentTime -
+                    videoPlayer.currentTime
+                ) > 0.15
+            ) {
+                originalVideoPlayer.currentTime =
+                    videoPlayer.currentTime;
+            }
+        });
     }
 
 
